@@ -2,15 +2,102 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Exemplo 2 - IBGE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desafio 1 - Gerador de Cães</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 100%;
+        }
+        .dog-image-container {
+            width: 100%;
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            background-color: #e9ecef;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border: 2px dashed #dee2e6;
+        }
+        #dog-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Faz a imagem preencher o espaço sem distorcer */
+            display: none; /* Escondida até carregar a primeira */
+        }
+        .placeholder-icon {
+            font-size: 3rem;
+            color: #adb5bd;
+        }
+    </style>
 </head>
-<body class="bg-light d-flex justify-content-center align-items-center vh-100">
+<body>
 
-    <!-- Card -->
-    
-    
-    <!-- Script JS -->
-    
+    <div class="card">
+        <h2 class="mb-4"> Gerador de Cães 🐾</h2>
+        
+        <div class="dog-image-container" id="container">
+            <div id="placeholder" class="placeholder-icon">🐾</div>
+            <img src="" id="dog-img" alt="Cachorro fofo">
+        </div>
+
+        <button class="btn btn-primary btn-lg w-100" onclick="gerarCao()" id="btn-gerar">
+            Gerar Cão
+        </button>
+    </div>
+
+    <script>
+        async function gerarCao() {
+            const btn = document.getElementById('btn-gerar');
+            const img = document.getElementById('dog-img');
+            const placeholder = document.getElementById('placeholder');
+
+            // Feedback visual: desabilita o botão enquanto carrega
+            btn.disabled = true;
+            btn.innerText = "Carregando...";
+
+            try {
+                // 1. Faz a requisição para a API
+                const resposta = await fetch('https://dog.ceo/api/breeds/image/random');
+                
+                // 2. Converte a resposta para JSON
+                const dados = await resposta.json();
+
+                // 3. Atualiza o SRC da imagem com o link que vem na propriedade 'message'
+                img.src = dados.message;
+
+                // 4. Lógica para mostrar a imagem e esconder o placeholder
+                img.onload = function() {
+                    img.style.display = "block";
+                    placeholder.style.display = "none";
+                    btn.disabled = false;
+                    btn.innerText = "Gerar Cão";
+                };
+
+            } catch (erro) {
+                alert("Erro ao buscar um novo cãozinho. Tente novamente!");
+                console.error("Erro:", erro);
+                btn.disabled = false;
+                btn.innerText = "Gerar Cão";
+            }
+        }
+    </script>
+
 </body>
 </html>

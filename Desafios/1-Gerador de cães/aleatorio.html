@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de cachorro</title>
+</head>
+<body>
+    <div class="card p-4 shadow-sm" style="width: 25rem;">
+        <h4 class="text-center mb-4">Gerador de cães 🐾</h4>
+        
+        <div class="mb-3">
+            <label class="form-label fw-bold">Estado</label>
+            <select id="estado" class="form-select" onchange="carregarCidades(this.value)">
+                <option value="">Selecione um Estado...</option>
+                </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Cidade</label>
+            <select id="cidade" class="form-select" disabled>
+                <option value="">Aguardando estado...</option>
+                </select>
+        </div>
+    </div>
+    
+</body>
+</html>
