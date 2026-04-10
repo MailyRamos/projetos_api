@@ -1,28 +1,105 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de cachorro</title>
+    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Desafio 1 - Gerador de Cães</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #f0f2f5; /* Cor de fundo cinza clara */
+            display: flex; /* Ativa o modo de layout flexível */
+            justify-content: center; /* Centraliza o conteúdo horizontalmente */
+            align-items: center; /* Centraliza o conteúdo verticalmente */
+            height: 100vh; /* Faz o corpo ocupar 100% da altura da tela */
+            margin: 0; /* Remove margens padrão do navegador */
+        }
+        .dog-card {
+            background-color: #ffffff; /* Fundo branco para o cartão */
+            padding: 2rem; /* Espaçamento interno */
+            border-radius: 20px; /* Bordas arredondadas */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidade */
+            text-align: center; /* Centraliza os textos e botões */
+            max-width: 450px; /* Largura máxima do cartão */
+            width: 100%; /* Ocupa toda a largura disponível até o máximo acima */
+        }
+        .dog-image-container {
+            width: 100%; /* Largura total do cartão */
+            height: 300px; /* Altura fixa para não "pular" quando a foto carregar */
+            border-radius: 15px; /* Arredonda os cantos da área da imagem */
+            overflow: hidden; /* Esconde o que sair para fora do limite das bordas */
+            background-color: #e9ecef; /* Cor de fundo enquanto a imagem não chega */
+            display: flex; 
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 1.5rem; /* Espaço entre a imagem e o botão */
+            border: 2px dashed #dee2e6; /* Borda tracejada charmosa */
+        }
+        #dog-img {
+            width: 100%; /* Imagem ocupa toda a largura do container */
+            height: 100%; /* Imagem ocupa toda a altura do container */
+            object-fit: cover; /* Ajusta a foto para preencher o espaço sem ficar esticada */
+            display: none; /* Começa escondida (só aparece quando carregar a foto) */
+        }
+        .placeholder-icon {
+            font-size: 3rem; /* Tamanho do ícone de patinha */
+            color: #adb5bd; /* Cor cinza para o ícone */
+        }
+    </style>
 </head>
+
 <body>
-    <div class="card p-4 shadow-sm" style="width: 25rem;">
-        <h4 class="text-center mb-4">Gerador de cães 🐾</h4>
+    <div class="dog-card">
+        <h2 class="mb-4">Gerador de Cães 🐾</h2>
         
-        <div class="mb-3">
-            <label class="form-label fw-bold">Estado</label>
-            <select id="estado" class="form-select" onchange="carregarCidades(this.value)">
-                <option value="">Selecione um Estado...</option>
-                </select>
+        <div class="dog-image-container" id="container">
+            <div id="placeholder" class="placeholder-icon">🐾</div>
+            <img src="" id="dog-img" alt="Cachorro fofo">
         </div>
 
-        <div class="mb-3">
-            <label class="form-label fw-bold">Cidade</label>
-            <select id="cidade" class="form-select" disabled>
-                <option value="">Aguardando estado...</option>
-                </select>
-        </div>
+        <button class="btn btn-primary btn-lg w-100" onclick="gerarCao()" id="btn-gerar">
+            Gerar Cão
+        </button>
     </div>
-    
+
+    <!-- SCRIPT -->
+    <script>
+        // Criamos uma função assíncrona (async) porque ela vai esperar uma resposta da internet
+        async function gerarCao() {
+            // Pegamos as referências dos elementos HTML que vamos manipular
+            const btn = document.getElementById('btn-gerar');
+            const img = document.getElementById('dog-img');
+            const placeholder = document.getElementById('placeholder');
+
+            // Mudamos o estado do botão para o usuário saber que algo está acontecendo
+            btn.disabled = true; // Desativa o clique
+            btn.innerText = "Carregando..."; // Muda o texto
+
+            try {
+                // 'fetch' faz a chamada para a URL da API. 'await' faz o código esperar a resposta.
+                const resposta = await fetch('https://dog.ceo/api/breeds/image/random');
+                
+                // Converte os dados brutos recebidos em um objeto JSON (lista de propriedades)
+                const dados = await resposta.json();
+
+                // Pegamos o link da imagem (que está em dados.message) e colocamos no 'src' da nossa <img>
+                img.src = dados.message;
+
+                // Esta sub-função roda AUTOMATICAMENTE assim que o navegador terminar de baixar a foto
+                img.onload = function() {
+                    img.style.display = "block"; // Mostra a imagem
+                    placeholder.style.display = "none"; // Esconde a patinha (placeholder)
+                    btn.disabled = false; // Reativa o botão
+                    btn.innerText = "Gerar Cão"; // Volta o texto original
+                };
+
+            } catch (erro) {
+                // Se o site da API estiver fora do ar ou a internet cair, cai aqui:
+                alert("Erro ao buscar um novo cãozinho. Tente novamente!");
+                console.error("Detalhes do erro:", erro); // Mostra o erro técnico no F12 do navegador
+                btn.disabled = false; // Reativa o botão para o usuário tentar de novo
+                btn.innerText = "Gerar Cão";
+            }
+        }
+    </script>
 </body>
 </html>
